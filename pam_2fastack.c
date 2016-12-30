@@ -13,7 +13,7 @@
 #define NULL (char *)0;
 
 int get_and_save_token(pam_handle_t *pamh, int flags, int argc, const char **argv);
-char *get_pass(pam_handle_t *pamh);
+int get_pass(pam_handle_t *pamh, char **token);
 
 int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv) {
   return(PAM_IGNORE);
@@ -44,17 +44,17 @@ int get_and_save_token(pam_handle_t *pamh, int flags, int argc, const char **arg
   char *pw = NULL;
   int rc = PAM_SESSION_ERR;
   
-  pw = get_pass(pamh);
+  rc = get_pass(pamh, &pw);
 
-  if (pw && pam_set_item(pamh, PAM_AUTHTOK, pw) == PAM_SUCCESS) {
-    rc = PAM_SUCCESS;
+  if (rc == PAM_SUCCESS && pw) {
+    rc = pam_set_item(pamh, PAM_AUTHTOK, pw);
   }
   
   return(rc);
 }
 
 #define NMSG 1
-char *get_pass(pam_handle_t *pamh) {
+int get_pass(pam_handle_t *pamh, char **token) {
   struct pam_conv *conv;
   const struct pam_message *pmsg[NMSG];
   struct pam_message msg;
@@ -63,7 +63,7 @@ char *get_pass(pam_handle_t *pamh) {
 
   rc = pam_get_item(pamh, PAM_CONV, (const void **) &conv);
   if (rc != PAM_SUCCESS) {
-    return NULL;
+    return rc;
   }
   
   msg.msg = "OTP: ";
@@ -74,5 +74,9 @@ char *get_pass(pam_handle_t *pamh) {
 
   rc = conv->conv(NMSG, pmsg, &resp, conv->appdata_ptr);
 
-  return resp->resp;
+  if (rc == PAM_SUCCESS) {
+    *token = resp->resp;
+  }
+  
+  return rc;
 }
