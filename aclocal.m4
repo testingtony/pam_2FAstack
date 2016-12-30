@@ -70,7 +70,7 @@ AC_DEFUN(DC_SYNC_RPATH, [
 
   for tryrpath in "-Wl,-rpath" "-Wl,--rpath" "-Wl,-R"; do
     LDFLAGS="$OLD_LDFLAGS $tryrpath -Wl,/tmp"
-    AC_LINK_IFELSE(AC_LANG_PROGRAM([], [ return(0); ]), [
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [ return(0); ])], [
       rpathldflags="$tryrpath"
       break
     ])
