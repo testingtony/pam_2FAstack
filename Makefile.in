@@ -12,10 +12,10 @@ exec_prefix = @exec_prefix@
 libdir = @libdir@
 security_dir = $(libdir)/security
 
-all: pam_success.@SHOBJEXT@
+all: pam_2fastack.@SHOBJEXT@
 
-pam_success.o: pam_success.c
-pam_success.@SHOBJEXT@: pam_success.o
+pam_2fastack.o: pam_2fastack.c
+pam_2fastack.@SHOBJEXT@: pam_2fastack.o
 
 %.o:
 	$(CC) $(SHOBJFLAGS) $(CFLAGS) $(CPPFLAGS) -o "$@" -c $(filter %.c, $^)
@@ -26,21 +26,21 @@ pam_success.@SHOBJEXT@: pam_success.o
 	@REMOVESYMS@ "$@"
 
 clean:
-	rm -f pam_success.o
-	rm -f pam_success.@SHOBJEXT@
+	rm -f pam_2fastack.o
+	rm -f pam_2fastack.@SHOBJEXT@
 
 distclean: clean
-	rm -f Makefile pam_success.syms config.log config.status
+	rm -f Makefile pam_2fastack.syms config.log config.status
 	rm -rf autom4te.cache
 
 mrproper: distclean
 	rm -f configure aclocal.m4
 
-install: pam_success.@SHOBJEXT@
-	rm -f "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
+install: pam_fastack.@SHOBJEXT@
+	rm -f "$(DESTDIR)$(security_dir)/pam_2fastack.@SHOBJEXT@"
 	mkdir -p "$(DESTDIR)$(security_dir)"
-	cp pam_success.@SHOBJEXT@ "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
-	chmod 755 "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
-	-chown root:root "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
+	cp pam_2fastack.@SHOBJEXT@ "$(DESTDIR)$(security_dir)/pam_2fastack.@SHOBJEXT@"
+	chmod 755 "$(DESTDIR)$(security_dir)/pam_2fastack.@SHOBJEXT@"
+	-chown root:root "$(DESTDIR)$(security_dir)/pam_2fastack.@SHOBJEXT@"
 
 .PHONY: all clean distclean install

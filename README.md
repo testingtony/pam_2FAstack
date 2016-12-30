@@ -3,6 +3,49 @@ pam_2FAstack
 
 An attempt to pass the same token to multiple otp modules
 
+Compiling and Installing
+------------------------
+
+As  normal user
+
+```
+$ autoconf
+$ ./configure
+$ make
+$ sudo make install
+```
+
+as root
+
+```
+# ls -s /usr/local/lib/security/pam_2fastack.so /lib/security/
+```
+
+Configure for separate system password and otp prompts
+------------------------------------------------------
+
+/etc/pam.d/sshd
+```
+auth required   pam_2fastack.so
+auth [success=2 default=ignore] pam_google_authenticator.so use_first_pass forward_pass
+auth [success=1 default=ignore] pam_yubico.so id=#### use_first_pass
+auth required   pam_deny.so
+auth required   pam_unix.so nullok_secure use_first_pass
+```
+
+Configure for combined system password and otp prompt
+-----------------------------------------------------
+
+/etc/pam.d/sshd
+```
+auth required   pam_unix.so nullok_secure
+auth required   pam_2fastack.so
+auth [success=2 default=ignore] pam_google_authenticator.so use_first_pass
+auth [success=1 default=ignore] pam_yubico.so id=#### use_first_pass
+auth required   pam_deny.so
+```
+
+
 Source
 ------
 
