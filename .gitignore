@@ -2,6 +2,14 @@
 *~
 *#
 
+# Autoconf files
+Makefile
+autom4te.cache/
+config.log
+config.status
+*.syms
+
+
 # Prerequisites
 *.d
 
