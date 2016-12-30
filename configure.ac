@@ -1,4 +1,4 @@
-AC_INIT(pam_success, 0.1) 
+AC_INIT(pam_2fastack, 0.1) 
 
 dnl Locate standard tools
 AC_PROG_CC
@@ -14,7 +14,7 @@ dnl Determine how to create shared objects on this platform
 DC_GET_SHOBJFLAGS
 
 dnl Determine how to strip executables and remove symbols
-DC_FIND_STRIP_AND_REMOVESYMS(pam_success.syms)
+DC_FIND_STRIP_AND_REMOVESYMS(pam_2fastack.syms)
 
 dnl Check for all required headers
 AC_CHECK_HEADERS(security/pam_appl.h security/pam_modules.h,, [
@@ -35,4 +35,4 @@ dnl Upate LDFLAGS to include setting the run-time linker path to the same as our
 DC_SYNC_RPATH
 
 dnl Produce Makefile
-AC_OUTPUT(Makefile pam_success.syms)
+AC_OUTPUT(Makefile pam_2fastack.syms)
