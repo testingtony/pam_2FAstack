@@ -1,0 +1,46 @@
+CC = @CC@
+LDFLAGS = @LDFLAGS@
+CPPFLAGS = @CPPFLAGS@ @DEFS@
+CFLAGS = @CFLAGS@
+LIBS = @LIBS@
+SHOBJFLAGS = @SHOBJFLAGS@
+SHOBJLDFLAGS = @SHOBJLDFLAGS@
+
+PREFIX = @prefix@
+prefix = $(PREFIX)
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+security_dir = $(libdir)/security
+
+all: pam_success.@SHOBJEXT@
+
+pam_success.o: pam_success.c
+pam_success.@SHOBJEXT@: pam_success.o
+
+%.o:
+	$(CC) $(SHOBJFLAGS) $(CFLAGS) $(CPPFLAGS) -o "$@" -c $(filter %.c, $^)
+
+%.@SHOBJEXT@:
+	$(CC) $(SHOBJFLAGS) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(SHOBJLDFLAGS) -o "$@" $(filter %.o, $^) $(LIBS)
+	@WEAKENSYMS@ "$@"
+	@REMOVESYMS@ "$@"
+
+clean:
+	rm -f pam_success.o
+	rm -f pam_success.@SHOBJEXT@
+
+distclean: clean
+	rm -f Makefile pam_success.syms config.log config.status
+	rm -rf autom4te.cache
+
+mrproper: distclean
+	rm -f configure aclocal.m4
+
+install: pam_success.@SHOBJEXT@
+	rm -f "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
+	mkdir -p "$(DESTDIR)$(security_dir)"
+	cp pam_success.@SHOBJEXT@ "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
+	chmod 755 "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
+	-chown root:root "$(DESTDIR)$(security_dir)/pam_success.@SHOBJEXT@"
+
+.PHONY: all clean distclean install
